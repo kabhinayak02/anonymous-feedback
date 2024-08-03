@@ -15,7 +15,7 @@ const MessageSchema: Schema<Message> = new Schema({
         required: true,
         default: Date.now
     }
-})
+});
 
 export interface User extends Document{
     username: string;
@@ -24,7 +24,7 @@ export interface User extends Document{
     verifyCode: string,
     verifyCodeExpiry: Date;
     isVerified: boolean;
-    isAcceptingMessage: boolean;
+    isAcceptingMessages: boolean;
     messages: Message[];
 }
 
@@ -57,7 +57,7 @@ const UserSchema: Schema<User> = new Schema({
         type: Boolean,
         default: false
     },
-    isAcceptingMessage: {
+    isAcceptingMessages: {
         type: Boolean,
         dafault: true
     },
@@ -65,6 +65,6 @@ const UserSchema: Schema<User> = new Schema({
 
 });
 
-const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema)
+const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema);
 
-export default UserModel
+export default UserModel;
