@@ -25,7 +25,7 @@ export interface User extends Document{
     verifyCodeExpiry: Date;
     isVerified: boolean;
     isAcceptingMessage: boolean;
-    message: Message[];
+    messages: Message[];
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -33,18 +33,17 @@ const UserSchema: Schema<User> = new Schema({
         type: String,
         required: [true, "username is required"],
         trim: true,
-        uique: true
+        unique: true
     },
     email: {
         type: String, 
         required: [true, "Email is required"], 
         unique: true, 
-        match: [/.+\@.+\..+/, "Please use a valid email address"]
+        match: [/.+\@.+\..+/, 'Please use a valid email address']
     },
     password: {
         type: String, 
-        required: [true, "Password is required"],
-
+        required: [true, "Password is required"]
     },
     verifyCode: {
         type: String,
@@ -62,9 +61,9 @@ const UserSchema: Schema<User> = new Schema({
         type: Boolean,
         dafault: true
     },
-    message: [MessageSchema]
+    messages: [MessageSchema]
 
-})
+});
 
 const UserModel = mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema)
 
