@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
-import  CredentialsProvider  from "next-auth/providers/credentials";
-
 import bcrypt from "bcryptjs";
+import  CredentialsProvider  from "next-auth/providers/credentials";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User.model";
 
@@ -15,7 +14,7 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
               },
               async authorize(credentials: any): Promise<any>{
-                await dbConnect()
+                await dbConnect();
                 try {
                     const user = await UserModel.findOne({
                         $or: [
@@ -34,10 +33,10 @@ export const authOptions: NextAuthOptions = {
                         return user;
                     }
                     else{
-                        throw new Error("Incorrect password")
+                        throw new Error("Incorrect password");
                     }
                 } catch (error: any) {
-                    throw new Error(error)
+                    throw new Error(error);
                 }
               }
         })
@@ -48,10 +47,10 @@ export const authOptions: NextAuthOptions = {
             if(user){ // modify existing token 
                 token._id = user._id?.toString();
                 token.isVerified = user.isVerified;
-                token.isAcceptionMessages = user.isAcceptingMessages;
+                token.isAcceptionMessage = user.isAcceptingMessages;
                 token.username = user.username;
             }
-            return token
+            return token;
         },
         async session({session, token}){
             
@@ -61,7 +60,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.isAcceptingMessages = token.isVerified;
                 session.user.username = token.username;
             }
-            return session
+            return session;
         }
     },
     pages: {
@@ -71,4 +70,4 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt"
     },
     secret: process.env.NEXTAUTH_SECRET
-}
+};

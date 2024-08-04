@@ -3,13 +3,11 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User.model";
 import { User } from "next-auth";
-import { Fascinate_Inline } from "next/font/google";
 
-export async function DELETE(request: Request, {params} : {params: {messageid: string}}) {
-    const messageId = params.messageid
+export async function DELETE(request: Request, { params }: { params: { messageId: string } }) {
+    const messageId: string = params.messageId;
     await dbConnect();
     const session = await getServerSession(authOptions);
-    const user: User = session?.user as User // can be issue 
 
     if (!session || !session.user) {
         return Response.json(
@@ -17,35 +15,37 @@ export async function DELETE(request: Request, {params} : {params: {messageid: s
                 success: false,
                 message: "Not Authenticated"
             }, { status: 401 }
-        )
+        );
     }
+    const user: User = session.user as User;
+
     try {
         const updateResult = await UserModel.updateOne(
-            {_id: user._id},
-            {$pull: {messages: {_id: messageId}}}
-        )
-        if(updateResult.modifiedCount == 0){
+            { _id: user._id },
+            { $pull: { messages: { _id: messageId } } }
+        );
+
+        if (updateResult.modifiedCount === 0) {
             return Response.json(
                 {
                     success: false,
                     message: "Message not found or already deleted"
-                }, { status: 400}
-            )
+                }, { status: 404 }
+            );
         }
         return Response.json(
             {
                 success: true,
-                message: "Message deleted"
-            }, { status: 200}
-        )
+                message: "Message deleted successfully"
+            }, { status: 200 }
+        );
     } catch (error) {
-        console.error("Error in delete message route", error)
+        console.error("Error in delete message route", error);
         return Response.json(
             {
-                success: Fascinate_Inline,
+                success: false,
                 message: "Internal Server Error"
-            }, { status: 500}
-        )
+            }, { status: 500 }
+        );
     }
-    
-}
+};

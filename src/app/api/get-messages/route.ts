@@ -9,46 +9,48 @@ export async function GET(request: Request) {
     await dbConnect();
 
     const session = await getServerSession(authOptions);
-    const user: User = session?.user as User // can be issue 
 
+    // Check if the user is authenticated
     if (!session || !session.user) {
         return Response.json(
             {
                 success: false,
                 message: "Not Authenticated"
             }, { status: 401 }
-        )
+        );
     }
+    const user = session?.user as User;
 
-    const userId = new mongoose.Types.ObjectId(user._id);
+    const userId = new mongoose.Types.ObjectId(user._id); // convert the user id to mongodb id format 
     try {
-        const user = await UserModel.aggregate([ // aggregation pipline
-            { $match: { id: userId } },
-            { $unwind: '$messages' },
-            { $sort: { 'messages.createdAt': -1 } },
-            { $group: { _id: '$_id', messages: { $push: 'messages' } } }
-        ])
-        if(!user || user.length == 0){
+        const result = await UserModel.aggregate([
+            { $match: { _id: userId } }, // Match the user's _id
+            { $unwind: '$messages' }, // Unwind the messages array
+            { $sort: { 'messages.createdAt': -1 } }, // Sort the messages by createdAt in descending order
+            { $group: { _id: '$_id', messages: { $push: '$messages' } } } // Group by _id and push all messages into an array
+        ]).exec();
+
+        if(!result || result.length === 0){
             return Response.json(
                 {
                     success: false,
-                    message: "User not found"
-                }, { status: 401}
-            )
+                    message: "No message"
+                }, { status: 404}
+            );
         }
         return Response.json(
             {
                 success: true,
-                messages: user[0].messages 
+                messages: result[0].messages 
             }, { status: 200}
-        )
+        );
     } catch (error) {
-        console.error("An Unexpcetd error occured", error)
+        console.error("An Unexpcetd error occured", error);
         return Response.json(
             {
                 success: false,
-                message: "Not Authenticated"
+                message: "Internal Server Error"
             }, { status: 500 }
-        )
+        );
     }
 }

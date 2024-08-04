@@ -8,8 +8,9 @@ export async function POST(request: Request) {
     await dbConnect();
 
     const session = await getServerSession(authOptions);
-    const user: User = session?.user as User // can be issue 
+    const user: User = session?.user as User; // can be issue 
 
+    // Check if the user is authenticated
     if (!session || !session.user) {
         return Response.json(
             {
@@ -21,37 +22,39 @@ export async function POST(request: Request) {
 
     const userId = user._id;
 
-    const { acceptMessages } = await request.json()
+    const { acceptMessages } = await request.json();
 
     try {
-        const updatedUser = await UserModel.findById(
+        const updatedUser = await UserModel.findByIdAndUpdate(
             userId,
-            { isAcceptingMessage: acceptMessages },
+            { isAcceptingMessages: acceptMessages },
             { new: true }
-        )
-        if (!updatedUser) {
+        );
+
+        if (!updatedUser) { // user not found
             return Response.json(
                 {
                     success: false,
-                    message: "failed to update user status to accept message"
-                }, { status: 401 }
+                    message: "Failed to update user status to accept message"
+                }, { status: 404 }
             )
         }
+
         return Response.json(
             {
                 success: true,
                 message: "Message acceptance updated successfully",
                 updatedUser
             }, { status: 200 }
-        )
+        );
     } catch (error) {
-        console.error("failed to update user status to accept message")
+        console.error("Failed to update user status to accept message", error);
         return Response.json(
             {
                 success: false,
-                message: "failed to update user status to accept message"
+                message: "Error in updating user acceptance messages status"
             }, { status: 500 }
-        )
+        );
     }
 }
 
@@ -59,46 +62,47 @@ export async function GET(request: Request) {
     await dbConnect();
 
     const session = await getServerSession(authOptions);
-    const user: User = session?.user as User
+    const user: User = session?.user as User;
 
+    // Check if the user is authenticated
     if (!session || !session.user) {
         return Response.json(
             {
                 success: false,
                 message: "Not Authenticate"
             }, { status: 401 }
-        )
+        );
     }
 
     const userId = user._id;
 
     try {
-        const foundUser = await UserModel.findById(userId)
+        const foundUser = await UserModel.findById(userId);
 
-        if (!foundUser) {
+        if (!foundUser) { // user not found
             return Response.json(
                 {
                     success: false,
                     message: "User not found"
-                }, { status: 401 }
-            )
+                }, { status: 404 }
+            );
         }
 
         return Response.json(
             {
                 success: true,
                 message: "User found",
-                isAcceptingMessages: foundUser.isAcceptingMessage
+                isAcceptingMessages: foundUser.isAcceptingMessages
             }, { status: 200 }
-        )
+        );
 
     } catch (error) {
-        console.error("Error in getting message acceptance status")
+        console.error("Error in getting message acceptance status", error);
         return Response.json(
             {
                 success: false,
                 message: "Error in getting message acceptance status"
             }, { status: 500 }
-        )
+        );
     }
 }
