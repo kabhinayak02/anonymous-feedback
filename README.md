@@ -47,7 +47,7 @@ A project that allows creators to generate a unique link where users can give fe
    git clone https://github.com/your-username/anonymous-feedback-platform.git
     ```
 
-4.  **Create an .env file in the root directory and add the required environment variables for MongoDB, NextAuth, and Gemini API.**
+4.  **Create an `.env` file in the root directory or use the `.env.sample` with your credentials**
 
 5. **Run the development server:**
     ```bash
