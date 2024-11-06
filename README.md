@@ -47,7 +47,7 @@ A project that allows creators to generate a unique link where users can give fe
    git clone https://github.com/your-username/anonymous-feedback-platform.git
     ```
 
-4.  **Create an `.env` file in the root directory or use the `.env.sample` with your credentials**
+4.  **Create an `.env` file in the root directory or use the `.env.sample` with your credentials** [.env.sample](https://github.com/kabhinayak02/anonymous-feedback/blob/main/.env.sample)
 
 5. **Run the development server:**
     ```bash
