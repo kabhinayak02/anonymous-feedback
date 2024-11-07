@@ -2,7 +2,6 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast'
-import { signUpSchema } from '@/schemas/signUpSchema'
 import { verifyCodeSchema } from '@/schemas/verifyCodeSchema'
 import { ApiResponse } from '@/types/ApiResponse'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -158,7 +157,7 @@ const VerifyAccount = () => {
                     {verifyCode && (
                         <>
                             <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-md">
-                                <p>We're experiencing issues with our email service. Please use the verification code displayed below to complete your account verification.</p>
+                                <p>We&apos;re experiencing issues with our email service. Please use the verification code displayed below to complete your account verification.</p>
                             </div>
                             <div className="bg-gray-200 text-gray-800 p-2 rounded-md mb-4">
                                 <p>Your verification code is: <strong>{verifyCode}</strong></p>
@@ -197,10 +196,6 @@ const VerifyAccount = () => {
             </div>
         </div>
     );
-    
-    
-    
-
 }
 
 export default VerifyAccount
