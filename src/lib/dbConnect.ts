@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+// import { DB_NAME } from "./constants.js";
+
+const DB_NAME = "secretMessageDb";
 
 type ConnectionObject = {
     isConnected?: number
@@ -14,7 +17,7 @@ async function dbConnect(): Promise<void> {
     }
 
     try { // try to connect to db 
-        const db = await mongoose.connect(process.env.MONGODB_URI || '', {}) ;
+        const db = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`) ;
 
         connection.isConnected = db.connections[0].readyState;
 
