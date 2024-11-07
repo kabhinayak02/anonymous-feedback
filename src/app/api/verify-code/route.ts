@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         console.error("Error in verifying user", error)
         return Response.json(
             {
-                success: true,
+                success: false,
                 message: "Error in verifying user"
             }, { status: 500 }
         );

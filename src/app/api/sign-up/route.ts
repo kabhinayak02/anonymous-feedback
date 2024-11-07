@@ -20,6 +20,7 @@ export async function POST(request: Request) {
             }, { status: 400 });
         }
         
+        // Generate the verification code and save it to the db for future verification 
         let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         const existingVerifiedByEmail = await UserModel.findOne({ email });
