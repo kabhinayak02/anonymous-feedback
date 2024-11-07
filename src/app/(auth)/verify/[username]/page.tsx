@@ -28,6 +28,7 @@ const VerifyAccount = () => {
     // Fetching verify code when the page first time loading
     useEffect(() => {
         const fetchVerificationCode = async () => {
+            if (!params.username) return;
             try {
                 const response = await axios.post('/api/get-verify-code', {
                     username: params.username
@@ -39,7 +40,7 @@ const VerifyAccount = () => {
         };
 
         fetchVerificationCode();
-    }, []); 
+    }, [params.username]); 
 
     const onSubmit = async (data: z.infer<typeof verifyCodeSchema>) => {
         try {
