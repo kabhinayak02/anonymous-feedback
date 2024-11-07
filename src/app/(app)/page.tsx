@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import Link from "next/link"
 // import AutoPlay from "embla-carousel-autoplay"
 import messages from "@/data/messages.json" // sample data 
 
@@ -40,10 +41,20 @@ const Home = () => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
+
+         {/* Go to Dashboard Button */}
+         <div className="mt-8">
+          <Link href="/dashboard">
+            <button className="px-6 py-3 bg-[#124E66] hover:bg-[#124E66]/80 text-white font-semibold rounded-lg transition-all duration-200">
+              Go to Dashboard
+            </button>
+          </Link>
+        </div>
+
       </main>
-      <footer className="text-center p-4 md:p-6">
+      {/* <footer className="text-center p-4 md:p-6">
         @2024 Secret Message. All rights are reserved.
-      </footer>
+      </footer> */}
     </>
   )
 }
