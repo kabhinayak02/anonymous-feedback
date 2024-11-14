@@ -293,8 +293,8 @@ const Page = () => {
           </p>
         </div>
   
-        {/* Optional: Additional information */}
-        <div className="mt-6 text-center text-sm text-[#748D92] relative z-10">
+        {/* For professsional Look */}
+        {/* <div className="mt-6 text-center text-sm text-[#748D92] relative z-10">
           <p>By signing up, you agree to our</p>
           <div className="space-x-2 mt-1">
             <Link href="/terms" className="text-[#124E66] hover:text-[#D3D9D4] transition-colors duration-200">
@@ -305,7 +305,7 @@ const Page = () => {
               Privacy Policy
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

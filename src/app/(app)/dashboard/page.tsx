@@ -14,12 +14,14 @@ import { User } from "next-auth"
 import { useSession } from "next-auth/react"
 import { useCallback, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter()
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages(messages.filter((message) => message._id !== messageId));
@@ -82,7 +84,9 @@ const Page = () => {
 
   // Fetch initial state from the server
   useEffect(() => {
-    if (!session || !session.user) return;
+    if (!session || !session.user){
+      router.push("/")
+    };
 
     fetchAllMessages();
     fetchAccpetMessage();
@@ -111,7 +115,7 @@ const Page = () => {
   };
 
   if (!session || !session.user) {
-    return <div> </div>;
+    return <div> Not Authorised </div>;
   }
 
   const { username } = session.user as User;

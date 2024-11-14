@@ -11,10 +11,12 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import { signInSchema } from "@/schemas/signInSchema"
 import { signIn } from "next-auth/react"
+import { useState } from "react"
 
 const Page = () => {
   const { toast } = useToast();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // zode implementation 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -26,23 +28,29 @@ const Page = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-
-    const result = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password
-    });
-
-    if (result?.error) {
-      toast({
-        title: "Login Failed",
-        description: "Incorrect username or password",
-        variant: "destructive"
+    setIsSubmitting(true)
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password
       });
-    }
-    
-    if (result?.url) {
-      router.replace('/dashboard');
+
+      if (result?.error) {
+        toast({
+          title: "Login Failed",
+          description: "Incorrect username or password",
+          variant: "destructive"
+        });
+      }
+
+      if (result?.url) {
+        router.replace('/dashboard');
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -103,14 +111,14 @@ const Page = () => {
         {/* Optional: Decorative element */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-[#124E66]/10 rounded-full blur-3xl -z-1"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#124E66]/10 rounded-full blur-3xl -z-1"></div>
-        
+
         <div className="text-center relative z-10">
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#D3D9D4] mb-4">
             Welcome Back to Secret Messages
           </h1>
           <p className="text-[#748D92] mb-8">Sign in to continue your secret conversations</p>
         </div>
-  
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative z-10">
             <FormField
@@ -119,25 +127,7 @@ const Page = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[#D3D9D4]">Email/Username</FormLabel>
-                  <Input 
-                    {...field} 
-                    className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
-                    focus:border-[#124E66] focus:ring-[#124E66]/50 
-                    placeholder-[#748D92] rounded-lg"
-                  />
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              name="password"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[#D3D9D4]">Password</FormLabel>
-                  <Input 
-                    type="password" 
+                  <Input
                     {...field}
                     className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
                     focus:border-[#124E66] focus:ring-[#124E66]/50 
@@ -147,40 +137,66 @@ const Page = () => {
                 </FormItem>
               )}
             />
-  
-            <Button 
+
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[#D3D9D4]">Password</FormLabel>
+                  <Input
+                    type="password"
+                    {...field}
+                    className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
+                    focus:border-[#124E66] focus:ring-[#124E66]/50 
+                    placeholder-[#748D92] rounded-lg"
+                  />
+                  <FormMessage className="text-red-400" />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
               className="w-full bg-[#124E66] hover:bg-[#124E66]/80 text-[#D3D9D4] 
               transition-all duration-200 shadow-lg hover:shadow-[#124E66]/20 
               border border-[#748D92]/20 hover:border-[#124E66] 
-              rounded-lg py-2.5 font-medium" 
-              type="submit"
+              rounded-lg py-2.5 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {isSubmitting ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin text-[#D3D9D4]" />
+                  <span>Signing In...</span>
+                </div>
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </form>
         </Form>
-  
+
         <div className="text-center mt-8 relative z-10">
           <p className="text-[#748D92]">
             Not a member yet?{' '}
-            <Link 
-              href="/sign-up" 
+            <Link
+              href="/sign-up"
               className="text-[#124E66] hover:text-[#D3D9D4] transition-colors duration-200 font-medium"
             >
               Sign up
             </Link>
           </p>
         </div>
-  
-        {/* Optional: Additional features */}
-        <div className="mt-6 text-center relative z-10">
-          <Link 
-            href="/forgot-password" 
+
+        {/* Forget Password feature */}
+        {/* <div className="mt-6 text-center relative z-10">
+          <Link
+            href="/forgot-password"
             className="text-[#748D92] hover:text-[#D3D9D4] text-sm transition-colors duration-200"
           >
             Forgot your password?
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -10,8 +10,10 @@ import {
 import Link from "next/link"
 // import AutoPlay from "embla-carousel-autoplay"
 import messages from "@/data/messages.json" // sample data 
+import { useSession } from "next-auth/react"
 
 const Home = () => {
+  const { data: session } = useSession()
   return (
     <>
       <main className="flex-grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-gray-800 text-white">
@@ -42,10 +44,14 @@ const Home = () => {
           <CarouselNext />
         </Carousel>
 
-         {/* Go to Dashboard Button */}
-         <div className="mt-8">
-          <Link href="/dashboard">
-            <button className="px-6 py-3 bg-[#124E66] hover:bg-[#124E66]/80 text-white font-semibold rounded-lg transition-all duration-200">
+        {/* Go to Dashboard Button */}
+        <div className="mt-8">
+          <Link href={session ? "/dashboard" : "#"} passHref>
+            <button
+              className={`px-6 py-3 font-semibold rounded-lg transition-all duration-200 ${session ? "bg-[#124E66] hover:bg-[#124E66]/80 text-white" : "bg-gray-500 cursor-not-allowed"
+                }`}
+              disabled={!session} // Disable if no session
+            >
               Go to Dashboard
             </button>
           </Link>
