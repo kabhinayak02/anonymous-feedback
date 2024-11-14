@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
+import { EyeIcon, Loader2, EyeOffIcon } from "lucide-react"
 import { signInSchema } from "@/schemas/signInSchema"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
@@ -16,7 +16,8 @@ import { useState } from "react"
 const Page = () => {
   const { toast } = useToast();
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // zode implementation 
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -52,6 +53,11 @@ const Page = () => {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Toggle password visibility
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword)
   }
 
   /*
@@ -128,6 +134,7 @@ const Page = () => {
                 <FormItem>
                   <FormLabel className="text-[#D3D9D4]">Email/Username</FormLabel>
                   <Input
+                    placeholder="email/username"
                     {...field}
                     className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
                     focus:border-[#124E66] focus:ring-[#124E66]/50 
@@ -144,13 +151,27 @@ const Page = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[#D3D9D4]">Password</FormLabel>
-                  <Input
-                    type="password"
-                    {...field}
-                    className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
-                    focus:border-[#124E66] focus:ring-[#124E66]/50 
-                    placeholder-[#748D92] rounded-lg"
-                  />
+                  <div className="relative">
+                    <Input
+                      placeholder="password"
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                      className="bg-[#212A31] border-[#748D92]/20 text-[#D3D9D4] 
+                        focus:border-[#124E66] focus:ring-[#124E66]/50 
+                        placeholder-[#748D92] rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleTogglePassword}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#748D92]"
+                    >
+                      {showPassword ? (
+                        <EyeOffIcon className="h-5 w-5" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                   <FormMessage className="text-red-400" />
                 </FormItem>
               )}
